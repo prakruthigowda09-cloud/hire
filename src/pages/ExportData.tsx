@@ -10,7 +10,10 @@ export default function ExportData() {
   const { token } = useAuth();
 
   const fetchAllRecords = async () => {
-    const res = await fetch('/api/records');
+    if (!token) return [];
+    const res = await fetch('/api/records', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
     return await res.json();
   };
 

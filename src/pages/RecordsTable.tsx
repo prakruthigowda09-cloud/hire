@@ -18,14 +18,24 @@ export default function RecordsTable() {
   const sortOrder = searchParams.get('sortOrder') || 'desc';
 
   useEffect(() => {
+    if (!token) {
+      setRecords([]);
+      setLoading(false);
+      return;
+    }
     fetchRecords();
-  }, [search, region, drive_status, sortField, sortOrder]);
+  }, [search, region, drive_status, sortField, sortOrder, token]);
 
   const fetchRecords = async () => {
+    if (!token) return;
     setLoading(true);
     try {
       const params = new URLSearchParams({ search, region, drive_status, sortField, sortOrder });
-      const res = await fetch(`/api/records?${params}`);
+      const res = await fetch(`/api/records?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       const data = await res.json();
       setRecords(data);
     } catch (err) {
@@ -36,7 +46,7 @@ export default function RecordsTable() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this record?')) return;
+    if (!token || !window.confirm('Are you sure you want to delete this record?')) return;
     try {
       const res = await fetch(`/api/records/${id}`, {
         method: 'DELETE',

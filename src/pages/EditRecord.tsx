@@ -76,8 +76,11 @@ export default function EditRecord() {
   }, [id]);
 
   const fetchRecord = async () => {
+    if (!token) return;
     try {
-      const res = await fetch('/api/records');
+      const res = await fetch('/api/records', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       const data = await res.json();
       const record = data.find((r: any) => r.id === Number(id));
       if (record) {

@@ -64,7 +64,7 @@ app.post('/api/admin/login', async (req, res) => {
 });
 
 // API Routes
-app.use('/api/records', require('./routes/records'));
+app.use('/api/records', authenticateToken, require('./routes/records'));
 app.get('/api/admin/dashboard', authenticateToken, recordController.getDashboardStats);
 app.post('/api/admin/import', authenticateToken, recordController.importRecords);
 

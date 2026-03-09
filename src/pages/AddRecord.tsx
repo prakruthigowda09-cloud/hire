@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, AlertCircle, ArrowLeft, Upload } from 'lucide-react';
 import { REGIONS, DRIVE_STATUSES } from '../lib/utils';
+import { useAuth } from '../hooks/useAuth';
 import { fileToBase64 } from '../lib/fileUtils';
 
 const InputField: React.FC<any> = ({ label, required = false, type = 'text', value, onChange, placeholder, options, accept }) => (
@@ -41,6 +42,7 @@ const InputField: React.FC<any> = ({ label, required = false, type = 'text', val
 
 export default function AddRecord() {
   const navigate = useNavigate();
+  const { token } = useAuth();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,6 +89,10 @@ export default function AddRecord() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    if (!token) {
+      setError('You must be logged in to add records');
+      return;
+    }
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -94,7 +100,10 @@ export default function AddRecord() {
     try {
       const res = await fetch('/api/records', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(formData)
       });
 
