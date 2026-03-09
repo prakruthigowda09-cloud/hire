@@ -71,7 +71,8 @@ app.post('/api/admin/import', authenticateToken, recordController.importRecords)
 // --- Serve Frontend in Production ---
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../dist')));
-    app.get('/:splat*', (req, res) => {
+    // SPA Catch-all: If no API routes matched, serve the index.html
+    app.use((req, res) => {
         res.sendFile(path.join(__dirname, '../dist', 'index.html'));
     });
 }
