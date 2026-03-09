@@ -55,9 +55,14 @@ const authenticateToken = (req, res, next) => {
 // Auth
 app.post('/api/admin/login', async (req, res) => {
     const { username, password } = req.body;
+    console.log(`Login attempt for: ${username}`);
     try {
         const user = await AdminUser.findOne({ username });
+        if (!user) {
+            console.log(`User not found: ${username}`);
+        }
         if (user && await bcrypt.compare(password, user.password_hash)) {
+            console.log(`Login successful for: ${username}`);
             const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '24h' });
             res.json({ token, username: user.username });
         } else {

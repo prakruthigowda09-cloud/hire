@@ -22,14 +22,18 @@ async function startServer() {
     const url = target + req.originalUrl;
 
     // Simple fetch-based proxy
+    const headers = { ...req.headers } as any;
+    delete headers['content-length'];
+    headers.host = 'localhost:5000';
+
     fetch(url, {
       method: req.method,
-      headers: { ...req.headers as any, host: 'localhost:5000' },
-      body: ['POST', 'PUT', 'PATCH'].includes(req.method) ? JSON.stringify(req.body) : undefined
+      headers,
+      body: ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) ? JSON.stringify(req.body) : undefined
     })
       .then(async (response) => {
-        const data = await response.text();
-        res.status(response.status).send(data);
+        const text = await response.text();
+        res.status(response.status).send(text);
       })
       .catch((err) => {
         res.status(502).json({ error: 'Backend server not reachable on port 5000', details: err.message });
