@@ -22,12 +22,17 @@ const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/hire-drive';
 mongoose.connect(uri)
     .then(async () => {
         console.log('MongoDB connection established');
-        // Seed Admin User if not exists
-        const adminExists = await AdminUser.findOne({ username: 'admin' });
+        // Seed Admin User
+        const newAdminEmail = 'prakruthiggowda09@gmail.com';
+        const adminExists = await AdminUser.findOne({ username: newAdminEmail });
+
+        // Remove old generic admin if exists
+        await AdminUser.deleteOne({ username: 'admin' });
+
         if (!adminExists) {
-            const hash = await bcrypt.hash('admin123', 10);
-            await AdminUser.create({ username: 'admin', password_hash: hash });
-            console.log('Default admin seeded (admin/admin123)');
+            const hash = await bcrypt.hash('hire@123', 10);
+            await AdminUser.create({ username: newAdminEmail, password_hash: hash });
+            console.log(`Default admin seeded (${newAdminEmail}/hire@123)`);
         }
     })
     .catch(err => console.error('MongoDB connection error:', err));
