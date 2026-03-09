@@ -21,10 +21,12 @@ async function startServer() {
     const target = 'http://localhost:5000';
     const url = target + req.originalUrl;
 
-    // Simple fetch-based proxy
-    const headers = { ...req.headers } as any;
-    delete headers['content-length'];
-    headers.host = 'localhost:5000';
+    // Enhanced API Proxy
+    const headers: Record<string, string> = {};
+    if (req.headers['content-type']) headers['Content-Type'] = req.headers['content-type'] as string;
+    if (req.headers['authorization']) headers['Authorization'] = req.headers['authorization'] as string;
+
+    console.log(`Proxying ${req.method} ${req.originalUrl} to backend...`);
 
     fetch(url, {
       method: req.method,
@@ -36,6 +38,7 @@ async function startServer() {
         res.status(response.status).send(text);
       })
       .catch((err) => {
+        console.error(`Proxy Error: ${err.message}`);
         res.status(502).json({ error: 'Backend server not reachable on port 5000', details: err.message });
       });
   });

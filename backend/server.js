@@ -18,16 +18,28 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
 // MongoDB Connection
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/hire-drive';
-mongoose.connect(uri)
+const uri = process.env.MONGODB_URI;
+console.log('Connecting to MongoDB using URI from ENV...');
+
+if (!uri) {
+    console.error('❌ MONGODB_URI is MISSING in environment variables!');
+}
+
+mongoose.connect(uri || 'mongodb://localhost:27017/hire-drive')
     .then(async () => {
-        console.log('MongoDB connection established');
+        console.log('✅ MongoDB connection established');
+
         // Seed Admin User (FORCED RESET)
         const newAdminEmail = 'prakruthiggowda09@gmail.com';
         const hashedPassword = await bcrypt.hash('hire@123', 10);
 
+        console.log(`Resetting admin user to: ${newAdminEmail}`);
+
         // Clear all old admins to be 100% sure
-        await AdminUser.deleteMany({ username: { $in: ['admin', 'prakruthigowda09@gmail.com', 'prakruthiggowda09@gmail.com'] } });
+        const deleteResult = await AdminUser.deleteMany({
+            username: { $in: ['admin', 'prakruthigowda09@gmail.com', 'prakruthiggowda09@gmail.com'] }
+        });
+        console.log(`Deleted ${deleteResult.deletedCount} old admin records`);
 
         // Re-create the specific admin
         await AdminUser.create({
@@ -37,7 +49,9 @@ mongoose.connect(uri)
 
         console.log(`✅ Admin account reset to: ${newAdminEmail} / hire@123`);
     })
-    .catch(err => console.error('MongoDB connection error:', err));
+    .catch(err => {
+        console.error('❌ MongoDB connection error:', err.message);
+    });
 
 // Auth Middleware
 const authenticateToken = (req, res, next) => {
@@ -58,19 +72,27 @@ const authenticateToken = (req, res, next) => {
 app.post('/api/admin/login', async (req, res) => {
     const { username, password } = req.body;
     console.log(`Login attempt for: ${username}`);
+
     try {
         const user = await AdminUser.findOne({ username });
         if (!user) {
-            console.log(`User not found: ${username}`);
+            console.log(`❌ User not found in DB: ${username}`);
+            return res.status(401).json({ error: 'Invalid credentials' });
         }
-        if (user && await bcrypt.compare(password, user.password_hash)) {
-            console.log(`Login successful for: ${username}`);
+
+        console.log(`User found: ${user.username}. Comparing passwords...`);
+        const match = await bcrypt.compare(password, user.password_hash);
+
+        if (match) {
+            console.log(`✅ Login successful for: ${username}`);
             const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '24h' });
             res.json({ token, username: user.username });
         } else {
+            console.log(`❌ Password mismatch for: ${username}`);
             res.status(401).json({ error: 'Invalid credentials' });
         }
     } catch (err) {
+        console.error('❌ Login Error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
