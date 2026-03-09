@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 require('dotenv').config();
 
 const Record = require('./models/Record');
@@ -62,14 +63,20 @@ app.post('/api/admin/login', async (req, res) => {
     }
 });
 
-// Records Routes (Standard)
+// API Routes
 app.use('/api/records', require('./routes/records'));
-
-// Admin Protected Routes
 app.get('/api/admin/dashboard', authenticateToken, recordController.getDashboardStats);
 app.post('/api/admin/import', authenticateToken, recordController.importRecords);
 
+// --- Serve Frontend in Production ---
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../dist')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+    });
+}
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port: ${PORT}`);
 });
