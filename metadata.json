@@ -1,0 +1,5 @@
+{
+  "name": "Hire Drive - Database Driven Records Manager",
+  "description": "A complete web application to replace Excel/Google Sheets with a secure, database-driven interface featuring admin dashboards, record management, and data import/export.",
+  "requestFramePermissions": []
+}

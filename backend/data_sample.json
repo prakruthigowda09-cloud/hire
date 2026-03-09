@@ -1,0 +1,61 @@
+[
+  {
+    "Sl. No.": 1,
+    "Date": 46002,
+    "Name of the college": "VET college",
+    "Place": "JP Nagar",
+    "Region": "Bangalore",
+    "Date of drive": "15th november",
+    "Drive Status Yes/No": "Yes",
+    "Person responsible": "Ujwal"
+  },
+  {
+    "Sl. No.": 2,
+    "Date": 46002,
+    "Name of the college": "First grade govt clg",
+    "Place": "Devanahalli",
+    "Region": "Bangalore Rural",
+    "Contact number": 9740858966,
+    "Date of drive": "29th november 11am",
+    "Person responsible": "Rahul",
+    "comments": "follow up with MVS Raju (placement) - 9448662553, The structure will be different, the principal proposed that we give 10 mins explanation to around 10 classrooms as he cannot bring everyone at a place, so our team will have to explain toptimize without the PPT to 10 classes from 11-1 or 2pm like an announcment and the principal is confident that he has the crowd who wants part time work, so we can do this."
+  },
+  {
+    "Sl. No.": 3,
+    "Date": 46002,
+    "Name of the college": "First grade govt clg",
+    "Place": "Chintamani",
+    "Region": "Bangalore Rural",
+    "Contact number": 8050740098,
+    "Date of drive": "13th november",
+    "Drive Status Yes/No": "Yes",
+    "Person responsible": "Rahul",
+    "__EMPTY_2": "Region",
+    "__EMPTY_3": "Total Count"
+  },
+  {
+    "Sl. No.": 4,
+    "Date": 46002,
+    "Name of the college": "Mandavya college",
+    "Place": "Mandya",
+    "Region": "Mysore road",
+    "Date of drive": "18th november",
+    "Drive Status Yes/No": "No",
+    "Person responsible": "Shivkumar",
+    "comments": "Cancelled",
+    "__EMPTY_2": "Bangalore",
+    "__EMPTY_3": 3
+  },
+  {
+    "Sl. No.": 5,
+    "Date": 46002,
+    "Name of the college": "Shri ranga patna degree college",
+    "Place": "Shri ranga patna",
+    "Region": "Mysore road",
+    "Date of drive": "14th november",
+    "Drive Status Yes/No": "Yes",
+    "Person responsible": "Shivkumar",
+    "__EMPTY_2": "Bangalore Rural",
+    "__EMPTY_3": 3
+  }
+]
